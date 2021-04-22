@@ -92,10 +92,33 @@ const npcSchema = new mongoose.Schema({
    active: Boolean
 });
 
+const questSchema = new mongoose.Schema({
+   id: {
+      type: String,
+      unique: true,
+      required: true
+   },
+   name: String,
+   description: String,
+   reward: String,
+   notes: String,
+   campaign: {
+      type: campaignSchema,
+      required: true
+   },
+   visibleTo: [userSchema],
+   createdBy: userSchema,
+   lastUpdate: {
+      updatedBy: userSchema,
+      updatedOn: Date
+   },
+   active: Boolean
+});
+
 const armySchema = new mongoose.Schema({
    id: {
       type: String,
-      unique:true,
+      unique: true,
       required: true
    },
    name: String,
@@ -121,6 +144,7 @@ const Character = new mongoose.model("Character", characterSchema);
 const Npc = new mongoose.model("Npc", npcSchema);
 const Army = new mongoose.model("Army", armySchema);
 const Location = new mongoose.model("Location", locationSchema);
+const Quest = new mongoose.model("Quest", questSchema);
 
 exports.User = User; 
 exports.Campaign = Campaign;
@@ -128,3 +152,4 @@ exports.Character = Character;
 exports.Npc = Npc;
 exports.Army = Army;
 exports.Location = Location;
+exports.Quest = Quest;

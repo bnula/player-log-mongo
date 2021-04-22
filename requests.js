@@ -1,16 +1,22 @@
+const _ = require("lodash");
 const {isBlank} = require("./isBlank");
+const {findCampaign} = require("./findCampaign");
 
-async function putRequest(req, res, mongooseModel) {
+async function putRequest(req, res, model) {
    const body = req.body;
    const id = req.params.id;
-   await mongooseModel.findOne({id: id}, (err, item) => {
+   await model.findOne({id: id}, (err, item) => {
       body._id = item._id;
       body.id = item.id;
+      if (body.active === undefined || isBlank(body.active)) {
+         body.active = item.active
+      };
    });
-   const item = new mongooseModel({
+   body.campaign = findCampaign(body, model, res);
+   const item = new model({
       ...body
    });
-   await mongooseModel.replaceOne({id: id}, item,
+   await model.replaceOne({id: id}, item,
       (err) => {
          if (err) {
             console.log(err);
@@ -21,7 +27,7 @@ async function putRequest(req, res, mongooseModel) {
       });
 }
 
-async function patchRequest(req, res, mongooseModel) {
+async function patchRequest(req, res, model) {
    const body = req.body;
    const id = req.params.id;
    for (const key in body) {
@@ -30,7 +36,7 @@ async function patchRequest(req, res, mongooseModel) {
       };
    };
    body.id = undefined;
-   await mongooseModel.updateOne({id: id}, body, {omitUndefined: true},
+   await model.updateOne({id: id}, body, {omitUndefined: true},
       (err) => {
          if (err) {
             console.log(err)
@@ -41,9 +47,9 @@ async function patchRequest(req, res, mongooseModel) {
       });
 }
 
-async function deleteOneRequest(req, res, mongooseModel) {
+async function deleteOneRequest(req, res, model) {
    const id = req.params.id;
-   await mongooseModel.updateOne({id: id}, {active: false}, (err) => {
+   await model.updateOne({id: id}, {active: false}, (err) => {
       if (err) {
          console.log(err);
          res.status(500).send("Something went wrong");
@@ -53,9 +59,9 @@ async function deleteOneRequest(req, res, mongooseModel) {
    });
 }
 
-async function getOneRequest(req, res, mongooseModel) {
+async function getOneRequest(req, res, model) {
    const id = req.params.id;
-   await mongooseModel.findOne({id: id}, (err, data) => {
+   await model.findOne({id: id}, (err, data) => {
       if (err) {
          res.status(500).send("Something went wrong..");
       } else {
@@ -64,8 +70,8 @@ async function getOneRequest(req, res, mongooseModel) {
    });
 }
 
-async function getAllRequest(req, res, mongooseModel) {
-   await mongooseModel.find({}, (err, data) => {
+async function getAllRequest(req, res, model) {
+   await model.find({}, (err, data) => {
       if (err) {
          res.status(500).send("Something went wrong..");
       } else {
@@ -74,11 +80,16 @@ async function getAllRequest(req, res, mongooseModel) {
    });
 };
 
-async function postRequest(req, res, mongooseModel) {
-   const body = req.body;
-   const data = await mongooseModel.find();
+async function postRequest(req, res, model) {
+   const body = req.body;   
+   if (_.isEmpty(body)) {
+      res.status(400).send("Empty Post request.");
+      return;
+   };
+   const data = await model.find();
    body.id = data.length + 1;
-   const item = new mongooseModel({
+   body.campaign = await findCampaign(body, model, res);
+   const item = new model({
       ...body,
       active: true
    });
