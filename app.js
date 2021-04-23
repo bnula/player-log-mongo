@@ -15,8 +15,8 @@ const mongoPwd = process.env.MONGO_PWD
 
 const mongo_url = `mongodb+srv://${mongoAcc}:${mongoPwd}@cluster0.1eajp.mongodb.net/playerLogDb?retryWrites=true&w=majority`;
 
-const {User, Campaign, Character, Npc, Army, Location, Quest} = require("./models");
-const {putRequest, patchRequest, deleteOneRequest, getAllRequest, getOneRequest, postRequest} = require("./requests");
+const {Campaign, Character, Npc, Army, Location, Quest} = require("./models/models");
+const {putRequest, patchRequest, deleteOneRequest, getAllRequest, getOneRequest, postRequest} = require("./controllers/requests");
 
 mongoose.connect(
    mongo_url,

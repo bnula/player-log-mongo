@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const {Campaign} = require("./models");
+const {Campaign} = require("../models/models");
 
 async function findCampaign(body, model, res) {
    if (model !== Campaign) {

@@ -1,6 +1,6 @@
 const _ = require("lodash");
-const {isBlank} = require("./isBlank");
-const {findCampaign} = require("./findCampaign");
+const {isBlank} = require("../functions/isBlank");
+const {findCampaign} = require("../functions/findCampaign");
 
 async function putRequest(req, res, model) {
    const body = req.body;
