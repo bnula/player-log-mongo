@@ -1,12 +1,37 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-   userName: String,
+   userName: {
+      type: String,
+      required: true
+   },
    email: String,
-   password: String,
+   password: {
+      type: String,
+      required: true
+   },
    permissionLevel: String,
    googleId: String
 });
+
+userSchema.pre(
+   "save",
+   async (next) => {
+      const user = this;
+      const hash = await bcrypt.hash(this.password, saltRounds);
+
+      this.password = hash;
+      next();
+   }
+);
+
+userSchema.methods.isValidPassword = async (password) => {
+   const user = this;
+   const compare = await bcrypt.compare(password, user.password);
+
+   return compare
+}
 
 const campaignSchema = new mongoose.Schema({
    id: {
