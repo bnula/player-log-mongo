@@ -1,8 +1,10 @@
 require("dotenv").config();
+require("./controllers/authentication");
 
 const express = require("express");
 const _ = require("lodash");
 const mongoose = require("mongoose");
+const passport = require("passport");
 
 const app = express();
 const port = process.env.PORT;
@@ -17,6 +19,7 @@ const mongo_url = `mongodb+srv://${mongoAcc}:${mongoPwd}@cluster0.1eajp.mongodb.
 
 const auth = require("./routes/authRoutes")
 const logRoutes = require("./routes/logRoutes");
+const testRoute = require("./routes/testRoutes");
 
 mongoose.connect(
    mongo_url,
@@ -25,13 +28,16 @@ mongoose.connect(
    useCreateIndex: true
    });
 
-app.get("/", (req, res) => {
-   res.send("hello there");
-});
-
 app.use("/", auth);
 
+app.use("/", passport.authenticate("jwt", {session: false}), testRoute);
+
 app.use("/", logRoutes);
+
+app.use(function(err, req, res, next) {
+   res.status(err.status||500);
+   res.json({ error: err});
+});
 
 app.listen({port}, () => {
    console.log(`running on port ${port}.`);

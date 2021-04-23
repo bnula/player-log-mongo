@@ -1,6 +1,9 @@
 const {User} = require("../models/models");
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
+const jwtStrategy = require("passport-jwt").Strategy;
+const extractJwt = require("passport-jwt").ExtractJwt;
+const privateKey = process.env.PRIV_KEY;
 
 passport.use("register",
    new localStrategy({
@@ -12,7 +15,7 @@ passport.use("register",
          const user = await User.create({email, password});
          return done(null, user);
       } catch (err) {
-         return done(err);
+         done(err);
       };
    })
 );
@@ -36,5 +39,18 @@ passport.use("login",
       } catch(err) {
          return done(err);
       };
+   })
+);
+
+passport.use(new jwtStrategy({
+   secretOrKey: privateKey,
+   jwtFromRequest: extractJwt.fromUrlQueryParameter("secret_token")
+   },
+   async (token, done) => {
+      try {
+         return done(null, token.user);
+      } catch (error) {
+         done(error);
+      }
    })
 );

@@ -1,18 +1,19 @@
 const express = require("express");
 const passport = require("passport");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
-const privateKey = process.env.PRIV_KEY;
 
-router.post("/register", (req, res) => {
+const router = express.Router();
+
+router.post("/register", 
    passport.authenticate("register", { session: false }),
-   async (req, res, next) => {
-      res.json({
-         message: "Registration successful",
-         user: req.user
-      });
-   }
+      async (req, res, next) => {
+         res.json({
+            message: "Registration successful",
+            user: req.user
+         });
 });
+
+const privateKey = process.env.PRIV_KEY;
 
 router.post("/login", async (req, res, next) => {
    passport.authenticate("login", async (err, user, info) => {
