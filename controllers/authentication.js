@@ -15,6 +15,7 @@ passport.use("register",
          const user = await User.create({email, password});
          return done(null, user);
       } catch (err) {
+         console.log(err);
          done(err);
       };
    })

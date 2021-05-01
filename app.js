@@ -19,7 +19,6 @@ const mongo_url = `mongodb+srv://${mongoAcc}:${mongoPwd}@cluster0.1eajp.mongodb.
 
 const auth = require("./routes/authRoutes")
 const logRoutes = require("./routes/logRoutes");
-const testRoute = require("./routes/testRoutes");
 
 mongoose.connect(
    mongo_url,
@@ -30,9 +29,7 @@ mongoose.connect(
 
 app.use("/", auth);
 
-app.use("/", passport.authenticate("jwt", {session: false}), testRoute);
-
-app.use("/", logRoutes);
+app.use("/", passport.authenticate("jwt", {session: false}), logRoutes);
 
 app.use(function(err, req, res, next) {
    res.status(err.status||500);

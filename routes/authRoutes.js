@@ -4,14 +4,14 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.post("/register", 
-   passport.authenticate("register", { session: false }),
-      async (req, res, next) => {
-         res.json({
-            message: "Registration successful",
-            user: req.user
-         });
-});
+// router.post("/register", 
+//    passport.authenticate("register", { session: false }),
+//       async (req, res, next) => {
+//          res.json({
+//             message: "Registration successful",
+//             user: req.user
+//          });
+// });
 
 const privateKey = process.env.PRIV_KEY;
 
