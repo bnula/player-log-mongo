@@ -10,7 +10,7 @@ const passport = require("passport");
 
 const app = express();
 const port = process.env.PORT;
-const allowedSites = ["https://afternoon-mesa-37868.herokuapp.com"]
+const allowedSites = [process.env.HEROKU_PAGE, process.env.LOCAL_PAGE, process.env.HEROKU_PAGE]
 const corsOptions = {
    origin: (origin, callback) => {
       if(allowedSites.indexOf(origin) !== -1) {
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
 const mongoAcc = process.env.MONGO_ACC;
-const mongoPwd = process.env.MONGO_PWD
+const mongoPwd = process.env.MONGO_PWD;
 
 const mongo_url = `mongodb+srv://${mongoAcc}:${mongoPwd}@cluster0.1eajp.mongodb.net/playerLogDb?retryWrites=true&w=majority`;
 
