@@ -1,6 +1,8 @@
 require("dotenv").config();
 require("./controllers/authentication");
 
+const cors = require("cors");
+
 const express = require("express");
 const _ = require("lodash");
 const mongoose = require("mongoose");
@@ -10,6 +12,10 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.urlencoded({extended: true}));
+app.use(cors({
+   origin: "https://afternoon-mesa-37868.herokuapp.com/"
+}));
+app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
 const mongoAcc = process.env.MONGO_ACC;
