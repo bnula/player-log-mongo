@@ -10,7 +10,7 @@ const passport = require("passport");
 
 const app = express();
 const port = process.env.PORT;
-const allowedSites = [process.env.HEROKU_PAGE, process.env.LOCAL_PAGE, process.env.HEROKU_PAGE]
+const allowedSites = [process.env.HEROKU_PAGE, process.env.LOCAL_PAGE, process.env.FERO_PAGE]
 const corsOptions = {
    origin: (origin, callback) => {
       if(allowedSites.indexOf(origin) !== -1) {
