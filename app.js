@@ -10,11 +10,19 @@ const passport = require("passport");
 
 const app = express();
 const port = process.env.PORT;
+const allowedSites = ["https://afternoon-mesa-37868.herokuapp.com"]
+const corsOptions = {
+   origin: (origin, callback) => {
+      if(allowedSites.indexOf(origin) !== -1) {
+         callback(null, true);
+      } else {
+         callback(new Error("Not allowd by CORS"));
+      };
+   }
+}
 
 app.use(express.urlencoded({extended: true}));
-app.use(cors({
-   origin: "https://afternoon-mesa-37868.herokuapp.com/"
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
